@@ -10,56 +10,32 @@ namespace MistyLandsRPG
     internal class UserPanels
     {
         static public async Task MenuPanel(Update update, Player player)
-        {
-            var replyKeyboard = new ReplyKeyboardMarkup(
-                new List<KeyboardButton[]>()
-                {
-                                        new KeyboardButton[]
-                                        {
-                                            new KeyboardButton("Подивитися карту"),
-                                            new KeyboardButton("Інвентар"),
-                                        },
-                                        new KeyboardButton[]
-                                        {
-                                            new KeyboardButton("Квести"),
-                                            new KeyboardButton("Бестіарій"),
-                                        },
-                                        new KeyboardButton[]
-                                        {
-                                            new KeyboardButton("Друзі"),
-                                            new KeyboardButton("Інформація про гравця")
-                                        }
-                })
+        {           
+            // Количество кнопок в строке
+            int buttonsPerRow = 3;
+            var buttons = player.State.Commands.Keys.Select(key => new KeyboardButton(key)).ToList();
+
+            var buttonRows = new List<KeyboardButton[]>();
+            for (int i = 0; i < buttons.Count; i += buttonsPerRow)
+            {
+                buttonRows.Add(buttons
+                    .Skip(i)
+                    .Take(buttonsPerRow)
+                    .ToArray());
+            }
+            
+            var replyKeyboard = new ReplyKeyboardMarkup(buttonRows)
             {
                 ResizeKeyboard = true,
             };
+
             await Program.botClient.SendTextMessageAsync(
                 update.Message.Chat.Id,
-                "Відкриваю меню!",
+                "📝",
                 replyMarkup: replyKeyboard);
 
             return;
         }
-        static public async Task MapPanel(Update update, Player player)
-        {
-            var replyKeyboard = new ReplyKeyboardMarkup(
-                new List<KeyboardButton[]>()
-                {
-                                        new KeyboardButton[]
-                                        {
-                                            new KeyboardButton("Подивитися карту"),                                            
-                                            new KeyboardButton("Перейти в меню"),                                            
-                                        },                                        
-                })
-            {
-                ResizeKeyboard = true,
-            };
-            await Program.botClient.SendTextMessageAsync(
-                update.Message.Chat.Id,
-                "🏔",
-                replyMarkup: replyKeyboard);
-
-            return;
-        }
+        
     }
 }

@@ -132,14 +132,15 @@ namespace MistyLandsRPG
         /// <param name="update"></param>
         /// <param name="player"></param>
         /// <param name="stateName">Имя состаяния</param>
+        /// <param name="changeMenu">Будет ли создана новая клавиатура</param>
         /// <returns></returns>
-        static public async Task GoToState(Update update, Player player, string stateName)
+        static public async Task GoToState(Update update, Player player, string stateName, bool changeMenu = true)
         {
-            player.State = StatesContainer.States[stateName];
-            var panelMethod = player.State.OpenPanelMethod;
-            if (panelMethod != null)
-                await panelMethod(update, player);
+            player.State = StatesContainer.States[stateName];           
             await player.UpdateData();
+
+            if (changeMenu) 
+                await UserPanels.MenuPanel(update, player);
         }
 
         // основные исключения
