@@ -110,16 +110,36 @@ namespace MistyLandsRPG
             else
             {
                 player.Name = update.Message.Text;
-                player.State = StatesContainer.States["menu"];
+                //player.State = StatesContainer.States["menu"];
                 player.Location = "Drybone";
-                await player.UpdateData();
+                //await player.UpdateData();
 
                 await Program.botClient.SendTextMessageAsync(
                                      chatId: update.Message.Chat.Id,
                                      text: "Добре, теперь твоє ім'я " + player.Name
                                  );
-                await UserPanels.GoToMenu(update, player);
+                //await player.State.OpenPanelMethod(update, player);
+                await GoToMenu(update, player);
             }
+        }
+        static public async Task GoToMenu(Update update, Player player)
+        {
+            await GoToState(update, player, "menu");
+        }
+        /// <summary>
+        /// Переход в конкретное состояние с обновлеием данных
+        /// </summary>
+        /// <param name="update"></param>
+        /// <param name="player"></param>
+        /// <param name="stateName">Имя состаяния</param>
+        /// <returns></returns>
+        static public async Task GoToState(Update update, Player player, string stateName)
+        {
+            player.State = StatesContainer.States[stateName];
+            var panelMethod = player.State.OpenPanelMethod;
+            if (panelMethod != null)
+                await panelMethod(update, player);
+            await player.UpdateData();
         }
 
         // основные исключения
@@ -142,8 +162,7 @@ namespace MistyLandsRPG
         
         static public async Task InstallMap(Update update, Player player)
         {
-            player.State = StatesContainer.States["map"];
-            await player.UpdateData();
+            await GoToState(update, player, "map");
 
             string imagePath = @"Images/Map_v1.jpg";
             using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
@@ -202,8 +221,7 @@ namespace MistyLandsRPG
                                 );
             }
         }
-        
-
+       
        
         // команды для нпс, возможно перенесу в отдельный класс
         static public async Task GoToNpcTest(Update update, Player player)

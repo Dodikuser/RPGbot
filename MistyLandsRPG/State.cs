@@ -26,6 +26,7 @@ namespace MistyLandsRPG
             Commands = commands;
             ExclusionMethod = exMethod;
             MyStateName = stateName;
+            OpenPanelMethod = panelMethod;
         }
 
     }
@@ -44,17 +45,13 @@ namespace MistyLandsRPG
                         {"Бестіарій",PniRazraba },
                         {"Друзі", PniRazraba },
                         {"Інформація про гравця", Player.PlayerInfo },
-                    }, NoCommands, "menu") },
+                    }, NoCommands, "menu", UserPanels.MenuPanel) },
             {"map",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){
                         {"Подивитися карту", InstallMap },
-                        {"Інвентар", PniRazraba },
-                        {"Квести", GoToNpcTest },
-                        {"Бестіарій", PniRazraba },
-                        {"Друзі", PniRazraba },
-                        {"Інформація про гравця", Player.PlayerInfo },
-                    },  GoToLocation, "map") },
+                        {"Перейти в меню", GoToMenu },                       
+                    },  GoToLocation, "map", UserPanels.MapPanel)},
             {"npcTest",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){

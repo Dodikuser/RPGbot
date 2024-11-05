@@ -9,7 +9,7 @@ namespace MistyLandsRPG
 {
     internal class UserPanels
     {
-        static public async Task GoToMenu(Update update, Player player)
+        static public async Task MenuPanel(Update update, Player player)
         {
             var replyKeyboard = new ReplyKeyboardMarkup(
                 new List<KeyboardButton[]>()
@@ -36,6 +36,27 @@ namespace MistyLandsRPG
             await Program.botClient.SendTextMessageAsync(
                 update.Message.Chat.Id,
                 "Відкриваю меню!",
+                replyMarkup: replyKeyboard);
+
+            return;
+        }
+        static public async Task MapPanel(Update update, Player player)
+        {
+            var replyKeyboard = new ReplyKeyboardMarkup(
+                new List<KeyboardButton[]>()
+                {
+                                        new KeyboardButton[]
+                                        {
+                                            new KeyboardButton("Подивитися карту"),                                            
+                                            new KeyboardButton("Перейти в меню"),                                            
+                                        },                                        
+                })
+            {
+                ResizeKeyboard = true,
+            };
+            await Program.botClient.SendTextMessageAsync(
+                update.Message.Chat.Id,
+                "Відкриваю панель!",
                 replyMarkup: replyKeyboard);
 
             return;
