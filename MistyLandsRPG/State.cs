@@ -12,21 +12,19 @@ namespace MistyLandsRPG
     internal class State
     {
         public Dictionary<string, Func<Update, Player, Task>> Commands;
-        public Func<Update, Player, Task> ExclusionMethod;
-        //public Func<Update, Player, Task> OpenPanelMethod;
+        public Func<Update, Player, Task> ExclusionMethod;        
         public string MyStateName;
 
         public State
             (
             Dictionary<string, Func<Update, Player, Task>> commands, 
             Func<Update, Player, Task> exMethod,
-            string stateName //Func<Update, Player, Task> panelMethod = null
+            string stateName
             ) 
         {
             Commands = commands;
             ExclusionMethod = exMethod;
             MyStateName = stateName;
-            //OpenPanelMethod = panelMethod;
         }
 
     }
@@ -41,32 +39,55 @@ namespace MistyLandsRPG
                     new Dictionary<string, Func<Update, Player, Task>>(){ 
                         {"Подивитися карту", InstallMap },
                         {"Інвентар", PniRazraba },
-                        {"Квести", GoToNpcTest },
+                        {"Квести", PniRazraba },
                         {"Бестіарій",PniRazraba },
                         {"Друзі", PniRazraba },
                         {"Інформація про гравця", Player.PlayerInfo },
+                        {"Відкрити меню локації", GoToLocationMenu },
                     }, NoCommands, "menu") },
             {"map",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){
                         {"Подивитися карту", InstallMap },
-                        {"Перейти в меню", GoToMenu },                       
-                    },  GoToLocation, "map")}, 
-            {"npcTest",
+                        {"Повернутися в основно меню", GoToMenu },                       
+                    },  GoToLocation, "map")},
+            {"inventory",
+                new State(
+                    new Dictionary<string, Func<Update, Player, Task>>(){                        
+                        {"Повернутися в основно меню", GoToMenu },
+                    },  GoToLocation, "map")},
+            {"location_menu",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){
                         {"Подивитися карту", InstallMap },
-                        {"Інвентар", PniRazraba },
-                        {"Квести", GoToNpcTest },
-                        {"Бестіарій", PniRazraba },
-                        {"Друзі", PniRazraba },
-                    }, NpcTest, "npcTest") },
+                        {"Переглянути Підземелля", PniRazraba },
+                        {"Переглянути НПС", PniRazraba },
+                        {"Повернутися в основно меню", GoToMenu },
+                    },  NoCommands, "location_menu")},
+            {"dungeon",
+                new State(
+                    new Dictionary<string, Func<Update, Player, Task>>(){
+                        {"Подивитися карту підземелля", PniRazraba },                       
+                        {"Сдатися(зрада)", GoToLocationMenu },                       
+                    },  NoCommands, "dungeon")},
+            {"fight",
+                new State(
+                    new Dictionary<string, Func<Update, Player, Task>>(){
+                        {"Удар", PniRazraba },
+                        {"Блок", PniRazraba },
+                        {"Сдатися(зрада)", PniRazraba },
+                    },  NoCommands, "fight")},
+            {"npc",
+                new State(
+                    new Dictionary<string, Func<Update, Player, Task>>(){
+                        {"Повернутися до меню локації", GoToLocationMenu },
+                        {"Поговорити", PniRazraba },
+                    },  NoCommands, "npc")},
             {"Admin",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){
                         {"Інформація про гравців", AdminCommands.ShowAllPlayer},
-                        {"Показати гравців на локаціях", AdminCommands.ShowPlayersOnLocations},
-                        
+                        {"Показати гравців на локаціях", AdminCommands.ShowPlayersOnLocations},                       
                     }, NoCommands, 
              "Admin") },
         };

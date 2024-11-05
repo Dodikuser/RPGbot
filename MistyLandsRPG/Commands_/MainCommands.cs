@@ -126,6 +126,12 @@ namespace MistyLandsRPG
         {
             await GoToState(update, player, "menu");
         }
+        static public async Task GoToLocationMenu(Update update, Player player)
+        {
+            await GoToState(update, player, "location_menu");
+        }
+
+
         /// <summary>
         /// Переход в конкретное состояние с обновлеием данных
         /// </summary>
@@ -159,8 +165,7 @@ namespace MistyLandsRPG
                                 );
         }
 
-        // команды связаные с локациями
-        
+        // команды связаные с локациями  
         static public async Task InstallMap(Update update, Player player)
         {
             await GoToState(update, player, "map");
