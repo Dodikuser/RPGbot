@@ -51,7 +51,7 @@ namespace MistyLandsRPG
                     new Dictionary<string, Func<Update, Player, Task>>(){
                         {"Подивитися карту", InstallMap },
                         {"Перейти в меню", GoToMenu },                       
-                    },  GoToLocation, "map", UserPanels.MapPanel)},
+                    },  GoToLocation, "map", UserPanels.MapPanel)}, 
             {"npcTest",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){

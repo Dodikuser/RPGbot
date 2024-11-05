@@ -56,7 +56,7 @@ namespace MistyLandsRPG
             };
             await Program.botClient.SendTextMessageAsync(
                 update.Message.Chat.Id,
-                "Відкриваю панель!",
+                "🏔",
                 replyMarkup: replyKeyboard);
 
             return;
