@@ -13,20 +13,20 @@ namespace MistyLandsRPG
     {
         public Dictionary<string, Func<Update, Player, Task>> Commands;
         public Func<Update, Player, Task> ExclusionMethod;
-        public Func<Update, Player, Task> OpenPanelMethod;
+        //public Func<Update, Player, Task> OpenPanelMethod;
         public string MyStateName;
 
         public State
             (
             Dictionary<string, Func<Update, Player, Task>> commands, 
             Func<Update, Player, Task> exMethod,
-            string stateName, Func<Update, Player, Task> panelMethod = null
+            string stateName //Func<Update, Player, Task> panelMethod = null
             ) 
         {
             Commands = commands;
             ExclusionMethod = exMethod;
             MyStateName = stateName;
-            OpenPanelMethod = panelMethod;
+            //OpenPanelMethod = panelMethod;
         }
 
     }
@@ -45,13 +45,13 @@ namespace MistyLandsRPG
                         {"Бестіарій",PniRazraba },
                         {"Друзі", PniRazraba },
                         {"Інформація про гравця", Player.PlayerInfo },
-                    }, NoCommands, "menu", UserPanels.MenuPanel) },
+                    }, NoCommands, "menu") },
             {"map",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){
                         {"Подивитися карту", InstallMap },
                         {"Перейти в меню", GoToMenu },                       
-                    },  GoToLocation, "map", UserPanels.MenuPanel)}, 
+                    },  GoToLocation, "map")}, 
             {"npcTest",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){
