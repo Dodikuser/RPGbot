@@ -130,6 +130,10 @@ namespace MistyLandsRPG
         {
             await GoToState(update, player, "location_menu");
         }
+        static public async Task GoToBasicMenu(Update update, Player player)
+        {
+            await GoToState(update, player, "basic_menu");
+        }
 
 
         /// <summary>
@@ -227,20 +231,7 @@ namespace MistyLandsRPG
                                 );
             }
         }
-       
-       
-        // команды для нпс, возможно перенесу в отдельный класс
-        static public async Task GoToNpcTest(Update update, Player player)
-        {
-            player.State = StatesContainer.States["npcTest"];
-            await player.UpdateData();
-        }
-        static public async Task NpcTest(Update update, Player player)
-        {
-            NPC npc = new NPC();
-            await npc.LoadNpc(update.Message.Text);
-            await npc.Print(update);
-        }
+                   
 
     }
 }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 
 namespace MistyLandsRPG
@@ -118,6 +119,51 @@ namespace MistyLandsRPG
             }
 
             return locations;
+        }
+
+        static public async Task ShowNpcs(Update update, Player player)
+        {
+            List<string> npcs = GetNpcOnLocation(player.Location);
+            
+            List<InlineKeyboardButton[]> buttons = new List<InlineKeyboardButton[]>();
+
+            for (int i = 0; i < npcs.Count; i += 4)
+            {
+                var row = new List<InlineKeyboardButton>();
+                for (int j = 0; j < 4 && i + j < npcs.Count; j++)
+                {
+                    row.Add(InlineKeyboardButton.WithCallbackData(npcs[i + j], "0" + npcs[i + j]));
+                }
+                buttons.Add(row.ToArray());
+            }
+            var inlineKeyboard = new InlineKeyboardMarkup(buttons);
+
+            string massage = npcs.Count != 0 ? $"У місті {player.Location} ви бачете перед собою деяких людей:" 
+                : "У цьому місті ви не бачете нікого";
+            await Program.botClient.SendTextMessageAsync(
+                update.Message.Chat.Id,
+                massage,
+                replyMarkup: inlineKeyboard);
+
+
+        }
+        static public List<string> GetNpcOnLocation(string location)
+        {
+            List<string> npcs = new List<string>();
+
+            string query = "SELECT Name FROM landsrpg.npc WHERE Location = @playerLocation";
+            MySqlCommand cmd = new MySqlCommand(query, Program.connection);
+            cmd.Parameters.AddWithValue("@playerLocation", location);
+
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    npcs.Add(reader["Name"].ToString());
+                }
+            }
+
+            return npcs;
         }
     }
 }

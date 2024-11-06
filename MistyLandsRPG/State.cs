@@ -43,26 +43,33 @@ namespace MistyLandsRPG
                         {"Бестіарій",PniRazraba },
                         {"Друзі", PniRazraba },
                         {"Інформація про гравця", Player.PlayerInfo },
-                        {"Відкрити меню локації", GoToLocationMenu },
+                        {"Повернутися в основне меню", GoToBasicMenu },
                     }, NoCommands, "menu") },
             {"map",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){
                         {"Подивитися карту", InstallMap },
-                        {"Повернутися в основно меню", GoToMenu },                       
+                        {"Повернутися в основне меню", GoToBasicMenu },                       
                     },  GoToLocation, "map")},
             {"inventory",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){                        
-                        {"Повернутися в основно меню", GoToMenu },
+                        {"Повернутися в основне меню", GoToBasicMenu },
                     },  GoToLocation, "map")},
+            {"basic_menu",
+                new State(
+                    new Dictionary<string, Func<Update, Player, Task>>(){
+                        {"Подивитися карту", InstallMap },
+                        {"Інвентар", PniRazraba },                                             
+                        {"Відкрити меню локації", GoToLocationMenu },
+                    }, NoCommands, "basic_menu") },
             {"location_menu",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){
                         {"Подивитися карту", InstallMap },
                         {"Переглянути Підземелля", PniRazraba },
-                        {"Переглянути НПС", PniRazraba },
-                        {"Повернутися в основно меню", GoToMenu },
+                        {"Переглянути НПС",Location.ShowNpcs },
+                        {"Перейти в меню", GoToMenu },
                     },  NoCommands, "location_menu")},
             {"dungeon",
                 new State(
