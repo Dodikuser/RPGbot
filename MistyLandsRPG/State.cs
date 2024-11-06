@@ -67,7 +67,7 @@ namespace MistyLandsRPG
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){
                         {"Подивитися карту", InstallMap },
-                        {"Переглянути Підземелля", PniRazraba },
+                        {"Переглянути Підземелля", Location.ShowDungeons },
                         {"Переглянути НПС",Location.ShowNpcs },
                         {"Перейти в меню", GoToMenu },
                     },  NoCommands, "location_menu")},

@@ -165,5 +165,50 @@ namespace MistyLandsRPG
 
             return npcs;
         }
+
+        static public async Task ShowDungeons(Update update, Player player)
+        {
+            List<string> npcs = GetDungeonsOnLocation(player.Location);
+
+            List<InlineKeyboardButton[]> buttons = new List<InlineKeyboardButton[]>();
+
+            for (int i = 0; i < npcs.Count; i += 4)
+            {
+                var row = new List<InlineKeyboardButton>();
+                for (int j = 0; j < 4 && i + j < npcs.Count; j++)
+                {
+                    row.Add(InlineKeyboardButton.WithCallbackData(npcs[i + j], "1" + npcs[i + j]));
+                }
+                buttons.Add(row.ToArray());
+            }
+            var inlineKeyboard = new InlineKeyboardMarkup(buttons);
+
+            string massage = npcs.Count != 0 ? $"У місті {player.Location} ви бачете декілька підземель:"
+                : "У цьому місті, як виявилось, немає підземель";
+            await Program.botClient.SendTextMessageAsync(
+                update.Message.Chat.Id,
+                massage,
+                replyMarkup: inlineKeyboard);
+
+
+        }
+        static public List<string> GetDungeonsOnLocation(string location)
+        {
+            List<string> dungeons = new List<string>();
+
+            string query = "SELECT Name FROM landsrpg.dungeons WHERE Location_Name = @playerLocation";
+            MySqlCommand cmd = new MySqlCommand(query, Program.connection);
+            cmd.Parameters.AddWithValue("@playerLocation", location);
+
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    dungeons.Add(reader["Name"].ToString());
+                }
+            }
+
+            return dungeons;
+        }
     }
 }

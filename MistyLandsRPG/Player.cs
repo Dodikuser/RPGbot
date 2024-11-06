@@ -18,9 +18,12 @@ namespace MistyLandsRPG
         public string Name;
         //Wepon, armor, charm, active quest
         public long Coins;
-        public string Location;
-        public State State;
         public string Role;
+
+        public State State;
+        public string Location;
+        public string NpcTalking;
+        public string Dungeon;
 
         public async Task ExecuteCommand(Update update, string command)
         {           
