@@ -251,6 +251,9 @@ namespace MistyLandsRPG
                 case 1: // если игрок нажал на кнопку данжон
                     player.Dungeon = massage.Substring(1);
                     await GoToState(update, player, "dungeon");
+                    Dungeon dungeon = new Dungeon();
+                    await dungeon.LoadDundeon(player.Dungeon);
+                    await dungeon.Print(update);
                     break;
             }
 
