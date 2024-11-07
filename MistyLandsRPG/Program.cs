@@ -74,7 +74,9 @@ namespace MistyLandsRPG
 
         private static async Task RegisterUser(long userId, ITelegramBotClient botClient, long chatId)
         {
-            string query = "INSERT INTO `landsrpg`.`players` (`Player_id`, `state`) VALUES (@userId, 'register');";
+            string query = "INSERT INTO `landsrpg`.`players` (`Player_id`) VALUES (@userId); " +
+                           "INSERT INTO `landsrpg`.`players_states` (`Player_id`, `state`) VALUES (@userId, 'register');";            
+
             using (MySqlCommand cmd = new MySqlCommand(query, connection))
             {
                 cmd.Parameters.AddWithValue("@userId", userId);

@@ -16,7 +16,6 @@ namespace MistyLandsRPG
     {
         public long Id;
         public string Name;
-        //Wepon, armor, charm, active quest
         public long Coins;
         public string Role;
 
@@ -25,6 +24,8 @@ namespace MistyLandsRPG
         public string NpcTalking;
         public string Dungeon;
 
+        //Wepon, armor, charm, active quest
+        
         public async Task ExecuteCommand(Update update, string command)
         {           
             if (State.Commands.ContainsKey(command))
@@ -43,9 +44,19 @@ namespace MistyLandsRPG
 
         public async Task UpdateData()
         {
-            string query = @"UPDATE `landsrpg`.`players` 
-                     SET `Name` = @Name, `Coins` = @Coins, `state` = @state, `location_now` = @location
-                     WHERE `Player_id` = @userId;";
+            string query = @"
+        UPDATE landsrpg.players p
+        JOIN landsrpg.players_states ps ON p.Player_id = ps.Player_id
+        SET 
+            p.Name = @Name, 
+            p.Coins = @Coins, 
+            p.role = @Role, 
+            ps.state = @state, 
+            ps.location_now = @location, 
+            ps.npc_talking = @npcTalking, 
+            ps.dungeon_now = @dungeon
+        WHERE 
+            p.Player_id = @userId;";
 
             using (var cmd = new MySqlCommand(query, Program.connection))
             {
@@ -53,23 +64,46 @@ namespace MistyLandsRPG
                 {
             new MySqlParameter("@Name", Name),
             new MySqlParameter("@Coins", Coins),
+            new MySqlParameter("@Role", Role),
             new MySqlParameter("@state", State.MyStateName),
             new MySqlParameter("@location", Location),
+            new MySqlParameter("@npcTalking", NpcTalking),
+            new MySqlParameter("@dungeon", Dungeon),
             new MySqlParameter("@userId", Id)
         });
+
                 try
                 {
                     await cmd.ExecuteNonQueryAsync();
-
-                }catch (Exception ex) {Console.WriteLine(ex.ToString());}
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
             }
         }
+
         public async Task LoadPlayer(long id)
         {
             Id = id;
-            string query = @"SELECT `Name`, `Coins`, `location_now`, `state`, `role` 
-                     FROM `landsrpg`.`players` 
-                     WHERE `Player_id` = @PlayerId;";
+            string query = @"
+                            SELECT 
+                                p.Name, 
+                                p.Coins, 
+                                p.role, 
+                                ps.state, 
+                                ps.location_now, 
+                                ps.npc_talking, 
+                                ps.dungeon_now
+                            FROM 
+                                landsrpg.players p
+                            JOIN 
+                                landsrpg.players_states ps 
+                            ON 
+                                p.Player_id = ps.Player_id
+                            WHERE 
+                                p.Player_id = @PlayerId;
+                        ";
 
             using (var cmd = new MySqlCommand(query, Program.connection))
             {

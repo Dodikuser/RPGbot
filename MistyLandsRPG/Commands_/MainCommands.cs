@@ -4,6 +4,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using MySql.Data.MySqlClient;
+using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
 
 
 namespace MistyLandsRPG
@@ -135,7 +136,6 @@ namespace MistyLandsRPG
             await GoToState(update, player, "basic_menu");
         }
 
-
         /// <summary>
         /// Переход в конкретное состояние с обновлеием данных
         /// </summary>
@@ -228,10 +228,26 @@ namespace MistyLandsRPG
                 await Program.botClient.SendTextMessageAsync(
                                     chatId: GetChatId(update),
                                     text: $"Немає дороги з {player.Location} до міста {targetLocation}"
-                                );
+                );
             }
         }
-                   
 
+        static public async Task ProcessingButtonsForLocationMenu(Update update, Player player)
+        {
+            if (update.Type != UpdateType.CallbackQuery) return;
+            int commandNum = Convert.ToInt32(update.Message.Text[0]);
+
+            switch (commandNum)
+            {
+                case 0: // если игрок нажал на кнопку нпс
+                    await GoToState(update, player, "npc");
+
+                    break;
+                case 1: // если игрок нажал на кнопку данжон
+                    await GoToState(update, player, "dungeon");
+                    break;
+            }
+
+        }
     }
 }
