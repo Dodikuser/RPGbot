@@ -21,8 +21,10 @@ namespace MistyLandsRPG
 
         public State State;
         public string Location;
+        public string TargetLocation;
         public string NpcTalking;
         public string Dungeon;
+        public string Event;
 
         //Wepon, armor, charm, active quest
         
@@ -54,7 +56,9 @@ namespace MistyLandsRPG
             ps.state = @state, 
             ps.location_now = @location, 
             ps.npc_talking = @npcTalking, 
-            ps.dungeon_now = @dungeon
+            ps.dungeon_now = @dungeon,
+            ps.target_location = @targetLocation,
+            ps.transition_event = @event
         WHERE 
             p.Player_id = @userId;";
 
@@ -69,7 +73,9 @@ namespace MistyLandsRPG
             new MySqlParameter("@location", Location),
             new MySqlParameter("@npcTalking", NpcTalking),
             new MySqlParameter("@dungeon", Dungeon),
-            new MySqlParameter("@userId", Id)
+            new MySqlParameter("@userId", Id),
+            new MySqlParameter("@targetLocation", TargetLocation),
+            new MySqlParameter("@event", Event),
         });
 
                 try
@@ -88,13 +94,8 @@ namespace MistyLandsRPG
             Id = id;
             string query = @"
                             SELECT 
-                                p.Name, 
-                                p.Coins, 
-                                p.role, 
-                                ps.state, 
-                                ps.location_now, 
-                                ps.npc_talking, 
-                                ps.dungeon_now
+                                 p.*, 
+                                 ps.*
                             FROM 
                                 landsrpg.players p
                             JOIN 
@@ -123,6 +124,8 @@ namespace MistyLandsRPG
                         string stateName = reader["state"] as string;
                         State = (StatesContainer.States.ContainsKey(stateName))? StatesContainer.States[stateName] : null;
                         Role = reader["role"] as string;
+                        TargetLocation = reader["target_location"] as string;
+                        Event = reader["transition_event"] as string;
                     }
                 }
             }

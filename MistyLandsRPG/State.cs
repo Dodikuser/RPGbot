@@ -97,6 +97,15 @@ namespace MistyLandsRPG
                         {"Показати гравців на локаціях", AdminCommands.ShowPlayersOnLocations},                       
                     }, NoCommands, 
              "Admin") },
+
+            {"transition_event",
+                new State(
+                    new Dictionary<string, Func<Update, Player, Task>>(){
+                        {"Інформація про гравців", AdminCommands.ShowAllPlayer},
+                        {"Показати гравців на локаціях", AdminCommands.ShowPlayersOnLocations},
+                    }, NoCommands,
+             "transition_event") },
+
         };
     }
 }

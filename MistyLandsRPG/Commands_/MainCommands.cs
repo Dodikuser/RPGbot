@@ -5,6 +5,10 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using MySql.Data.MySqlClient;
 using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
+using System.Data;
+using System.Drawing;
+using System.Xml.Linq;
+using System;
 
 
 namespace MistyLandsRPG
@@ -215,13 +219,17 @@ namespace MistyLandsRPG
 
             if (locationExist)
             {
-                player.Location = targetLocation;
-                await player.UpdateData();
+                player.TargetLocation = targetLocation;
 
-                await Program.botClient.SendTextMessageAsync(
-                                    chatId: GetChatId(update),
-                                    text: $"Ви прибули у місто {player.Location}"
-                                );
+                bool existEvent = false;
+                string eventName = EventChecker(player, targetLocation, out existEvent);
+
+                if (existEvent)
+                {
+                    await GoToState(update, player, "transition_event");
+                }
+                else await Relocate(update, player);
+                                
             }
             else
             {
@@ -230,6 +238,72 @@ namespace MistyLandsRPG
                                     text: $"Немає дороги з {player.Location} до міста {targetLocation}"
                 );
             }
+        }
+        static public async Task Relocate(Update update, Player player)
+        {
+            player.Location = player.TargetLocation;
+            await player.UpdateData();
+
+            await Program.botClient.SendTextMessageAsync(
+                                chatId: GetChatId(update),
+                                text: $"Ви прибули у місто {player.Location}"
+                            );
+        }
+
+        static public string EventChecker(Player player, string targetLoocation, out bool existEvent)
+        {
+            int transitionIndex = GetTransitionIndex(player.Location, targetLoocation);
+            string eventName = "";
+            try
+            {
+                string query = "SELECT * FROM landsrpg.transition_event WHERE transition_id = @id";
+                MySqlCommand cmd = new MySqlCommand(query, Program.connection);
+                cmd.Parameters.AddWithValue("@id", transitionIndex);
+
+                
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        eventName = reader["event_name"] as string;
+                    }
+                    else
+                    {
+                        existEvent = false;
+                        return "none_event";
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            existEvent = true;
+            return eventName;
+        }
+
+        static public int GetTransitionIndex(string first_location, string second_location)
+        {
+            int index = 0;
+
+            string query = "SELECT transition_id FROM landsrpg.transitions " +
+            "WHERE first_location = @first_location AND second_location = @second_location";
+
+            MySqlCommand cmd = new MySqlCommand(query, Program.connection);
+            cmd.Parameters.AddRange(new[]
+            {
+            new MySqlParameter("@first_location", first_location),
+            new MySqlParameter("@second_location", second_location)        
+            });
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    index = (int)reader["transition_id"];
+                }               
+            }
+
+            return index;
         }
 
         static public async Task ProcessingButtonsForLocationMenu(Update update, Player player)
