@@ -44,7 +44,7 @@ namespace MistyLandsRPG
             if (Name == null) return;
 
             await Program.botClient.SendTextMessageAsync(
-            chatId: update.Message.Chat.Id,
+            chatId: MainCommands.GetChatId(update),
                                      text: $"Мене звуть {Name} \n {DefaultSpeech}"
                                  );
         }

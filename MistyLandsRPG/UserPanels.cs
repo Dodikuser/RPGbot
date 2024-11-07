@@ -30,7 +30,7 @@ namespace MistyLandsRPG
             };
 
             await Program.botClient.SendTextMessageAsync(
-                update.Message.Chat.Id,
+                MainCommands.GetChatId(update),
                 "📝",
                 replyMarkup: replyKeyboard);
 

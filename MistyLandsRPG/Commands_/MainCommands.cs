@@ -235,15 +235,21 @@ namespace MistyLandsRPG
         static public async Task ProcessingButtonsForLocationMenu(Update update, Player player)
         {
             if (update.Type != UpdateType.CallbackQuery) return;
-            int commandNum = Convert.ToInt32(update.Message.Text[0]);
+            string massage = update.CallbackQuery.Data;
+            int commandNum = Convert.ToInt32(massage[0].ToString());
 
             switch (commandNum)
             {
                 case 0: // если игрок нажал на кнопку нпс
+                    player.NpcTalking = massage.Substring(1);
                     await GoToState(update, player, "npc");
 
+                    NPC npc = new NPC();
+                    await npc.LoadNpc(player.NpcTalking);
+                    await npc.Print(update);
                     break;
                 case 1: // если игрок нажал на кнопку данжон
+                    player.Dungeon = massage.Substring(1);
                     await GoToState(update, player, "dungeon");
                     break;
             }

@@ -70,7 +70,7 @@ namespace MistyLandsRPG
                         {"Переглянути Підземелля", Location.ShowDungeons },
                         {"Переглянути НПС",Location.ShowNpcs },
                         {"Перейти в меню", GoToMenu },
-                    },  NoCommands, "location_menu")},
+                    },  ProcessingButtonsForLocationMenu, "location_menu")},
             {"dungeon",
                 new State(
                     new Dictionary<string, Func<Update, Player, Task>>(){
